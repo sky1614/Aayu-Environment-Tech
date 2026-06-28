@@ -1,12 +1,12 @@
 (function () {
   const NAV_TARGETS = [
-    { labels: ['home'], target: '1. Homepage Wireframe.html' },
-    { labels: ['about us'], target: '2. About Us .html' },
-    { labels: ['why us'], target: '3. Why Us .html' },
-    { labels: ['process & our technology', 'process & technology'], target: '4. Process & Technology (standalone).html' },
-    { labels: ['opportunity'], target: '5. Opportunity Page.html' },
-    { labels: ['get started'], target: '6. Get Started .html' },
-    { labels: ['contact us'], target: '8. Contact Us .html' }
+    { labels: ['home'], target: 'index.html' },
+    { labels: ['about us'], target: 'about.html' },
+    { labels: ['why us'], target: 'why-us.html' },
+    { labels: ['process & our technology', 'process & technology', 'explore process'], target: 'process.html' },
+    { labels: ['opportunity'], target: 'opportunity.html' },
+    { labels: ['get started', 'evaluate my project'], target: 'get-started.html' },
+    { labels: ['contact us', 'schedule consultation', 'talk to an expert'], target: 'contact.html' }
   ];
 
   const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim().toLowerCase();
