@@ -41,6 +41,17 @@
       event.stopPropagation();
       window.location.assign(targetPage);
     });
+
+    const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('span').forEach(function (span) {
+      const label = (span.textContent || '').replace(/\s+/g, ' ').trim();
+      const entry = NAV_TARGETS.find((e) => e.labels.some((l) => normalize(l) === normalize(label)));
+      if (entry && entry.target === currentFile) {
+        span.style.fontWeight = '600';
+        span.style.borderBottom = '2px solid currentColor';
+        span.style.paddingBottom = '2px';
+      }
+    });
   }
 
   function patchDCLogicLifecycle() {
