@@ -1,11 +1,11 @@
 (function () {
   const NAV_TARGETS = [
     { labels: ['home'], target: 'index.html' },
-    { labels: ['about us'], target: 'about.html' },
+    { labels: ['about us', 'explore about us'], target: 'about.html' },
     { labels: ['why us'], target: 'why-us.html' },
-    { labels: ['process & our technology', 'process & technology', 'explore process'], target: 'process.html' },
-    { labels: ['opportunity'], target: 'opportunity.html' },
-    { labels: ['get started', 'evaluate my project'], target: 'get-started.html' },
+    { labels: ['process & our technology', 'process & technology', 'explore process', 'understand the complete process'], target: 'process.html' },
+    { labels: ['opportunity', 'explore market opportunity'], target: 'opportunity.html' },
+    { labels: ['get started', 'evaluate my project', 'start your journey'], target: 'get-started.html' },
     { labels: ['contact us', 'schedule consultation', 'talk to an expert'], target: 'contact.html' }
   ];
 
