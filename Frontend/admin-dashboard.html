@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Aayu Enviro Tech</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #111827;
+    }
+
+    /* ── Top nav ── */
+    nav {
+      background: #266041;
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-hex {
+      width: 34px;
+      height: 34px;
+      background: rgba(255,255,255,0.15);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-hex-inner {
+      width: 14px;
+      height: 14px;
+      background: #FFEB3B;
+      transform: rotate(45deg);
+      border-radius: 2px;
+    }
+    .nav-brand span {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    #user-name {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+    #logout-btn {
+      padding: 7px 16px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #logout-btn:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── Main content ── */
+    main { padding: 32px; max-width: 1200px; margin: 0 auto; }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+    .page-sub {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 28px;
+    }
+
+    /* ── Stat cards ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      border-left: 4px solid #266041;
+      transition: box-shadow 0.15s;
+    }
+    .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .stat-card:nth-child(2) { border-left-color: #7ad19a; }
+    .stat-card:nth-child(3) { border-left-color: #FFEB3B; }
+    .stat-card:nth-child(4) { border-left-color: #ef4444; }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+    .stat-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: #111827;
+      line-height: 1;
+    }
+    .stat-value.loading { color: #d1d5db; }
+
+    /* ── Leads table ── */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      background: #266041;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .table-wrap {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead {
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6b7280;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      color: #374151;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f9fafb; }
+
+    .status-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .status-new       { background: #eff6ff; color: #1d4ed8; }
+    .status-contacted { background: #fef9c3; color: #92400e; }
+    .status-qualified { background: #f0fdf4; color: #166534; }
+    .status-closed    { background: #f1f5f9; color: #475569; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #9ca3af;
+      font-size: 15px;
+    }
+
+    #load-error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="index.html">
+      <div class="nav-hex"><div class="nav-hex-inner"></div></div>
+      <span>Aayu Enviro Tech</span>
+    </a>
+    <div class="nav-right">
+      <span id="user-name"></span>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </nav>
+
+  <main>
+    <p class="page-title">Dashboard</p>
+    <p class="page-sub">Live data from ConnectX backend</p>
+
+    <div id="load-error"></div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Leads</div>
+        <div class="stat-value loading" id="stat-leads">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Trades</div>
+        <div class="stat-value loading" id="stat-trades">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Trips</div>
+        <div class="stat-value loading" id="stat-trips">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Alerts</div>
+        <div class="stat-value loading" id="stat-alerts">—</div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      Leads <span class="badge" id="leads-badge">0</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Company</th>
+            <th>Project Type</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="leads-body">
+          <tr><td colspan="7" class="empty-state">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="api.js"></script>
+  <script>
+    // Guard
+    if (!isLoggedIn()) location.href = 'admin.html';
+
+    // Show user name from token
+    const raw = getToken();
+    if (raw) {
+      try {
+        const payload = JSON.parse(atob(raw.split('.')[1]));
+        document.getElementById('user-name').textContent = payload.name || payload.email;
+      } catch (_) {}
+    }
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      logout();
+      location.href = 'admin.html';
+    });
+
+    // Helpers
+    function setVal(id, val) {
+      const el = document.getElementById(id);
+      el.textContent = val;
+      el.classList.remove('loading');
+    }
+    function showError(msg) {
+      const el = document.getElementById('load-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function statusClass(s) {
+      return 'status-' + (s || 'new').toLowerCase();
+    }
+    function fmt(dateStr) {
+      if (!dateStr) return '—';
+      return new Date(dateStr).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    async function loadDashboard() {
+      try {
+        const [leads, trades, trips, alerts] = await Promise.all([
+          getLeads(), getTrades(), getTrips(), getAlerts()
+        ]);
+
+        // Stat cards
+        setVal('stat-leads',  leads.length);
+        setVal('stat-trades', trades.filter(t => t.status === 'active').length);
+        setVal('stat-trips',  trips.filter(t => ['on-time','in-transit','loading'].includes(t.status)).length);
+        setVal('stat-alerts', alerts.length);
+
+        // Leads table
+        document.getElementById('leads-badge').textContent = leads.length;
+        const tbody = document.getElementById('leads-body');
+
+        if (!leads.length) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No leads yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = leads.map((l, i) => `
+          <tr>
+            <td style="color:#9ca3af;font-size:13px">${i + 1}</td>
+            <td style="font-weight:600">${l.name || '—'}</td>
+            <td style="color:#6b7280">${l.email || '—'}</td>
+            <td>${l.company || '—'}</td>
+            <td style="color:#6b7280">${l.projectType || '—'}</td>
+            <td><span class="status-pill ${statusClass(l.status)}">${l.status || 'new'}</span></td>
+            <td style="color:#9ca3af;font-size:13px">${fmt(l.createdAt)}</td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        showError('Failed to load data: ' + err.message);
+        ['stat-leads','stat-trades','stat-trips','stat-alerts'].forEach(id => setVal(id, '!'));
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

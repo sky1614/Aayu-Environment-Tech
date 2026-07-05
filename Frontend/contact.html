@@ -307,5 +307,79 @@ document.addEventListener('DOMContentLoaded', async function() {
   </script>
   <script src="nav.js"></script>
   <link rel="stylesheet" href="mobile.css">
+
+  <!-- Contact form → backend integration -->
+  <script src="api.js"></script>
+  <script>
+  // The bundle replaces document.documentElement but window survives.
+  // Attaching here means the listener persists after the DOM swap and
+  // catches form submissions from the newly rendered contact form.
+  (function () {
+    var BACKEND = 'http://localhost:4000';
+
+    window.addEventListener('submit', async function (e) {
+      var form = e.target;
+
+      // Identify the contact form by presence of both an email input and textarea
+      var emailEl = form.querySelector('input[type="email"], input[name*="email" i]');
+      var msgEl   = form.querySelector('textarea');
+      if (!emailEl || !msgEl) return; // not our form
+
+      e.preventDefault();
+
+      var nameEl  = form.querySelector('input[name*="name" i], input[id*="name" i], input[placeholder*="name" i]');
+      var phoneEl = form.querySelector('input[type="tel"], input[name*="phone" i], input[placeholder*="phone" i]');
+      var submitBtn = form.querySelector('[type="submit"]') || form.querySelector('button');
+      var btnText   = submitBtn ? submitBtn.textContent : '';
+
+      // Button loading state
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+
+      // Remove any existing feedback
+      var prev = document.getElementById('__aayu_msg');
+      if (prev) prev.remove();
+
+      var payload = {
+        name:    (nameEl  ? nameEl.value.trim()  : '') || 'Unknown',
+        email:   emailEl.value.trim(),
+        phone:   phoneEl  ? phoneEl.value.trim()  || undefined : undefined,
+        message: msgEl.value.trim() || undefined,
+      };
+
+      var msg = document.createElement('div');
+      msg.id = '__aayu_msg';
+      msg.style.cssText = [
+        'margin-top:16px', 'padding:14px 20px', 'border-radius:10px',
+        'font-size:15px', 'font-weight:500', 'line-height:1.5',
+      ].join(';');
+
+      try {
+        var res = await fetch(BACKEND + '/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          var body = await res.json().catch(function () { return {}; });
+          throw new Error(body.error || 'Submission failed. Please try again.');
+        }
+        form.reset();
+        msg.style.background = 'rgba(118,209,154,0.2)';
+        msg.style.color = '#0d4a26';
+        msg.style.border = '1px solid rgba(118,209,154,0.5)';
+        msg.textContent = "Thank you! We'll be in touch soon.";
+      } catch (err) {
+        msg.style.background = 'rgba(239,68,68,0.12)';
+        msg.style.color = '#7f1d1d';
+        msg.style.border = '1px solid rgba(239,68,68,0.35)';
+        msg.textContent = err.message;
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = btnText; }
+        form.insertAdjacentElement('afterend', msg);
+        setTimeout(function () { if (msg.parentNode) msg.remove(); }, 7000);
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
