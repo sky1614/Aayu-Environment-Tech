@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd \"C:\\\\Users\\\\SWAPNIL\\\\Aayu Enviro Tech\\\\backend\"; $job = Start-Job { Set-Location \"C:\\\\Users\\\\SWAPNIL\\\\Aayu Enviro Tech\\\\backend\"; node server.js 2>&1 }; Start-Sleep -Seconds 3; Receive-Job $job)"
+    ]
+  }
+}
