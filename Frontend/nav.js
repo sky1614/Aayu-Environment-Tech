@@ -20,6 +20,11 @@
   }
 
   function bindNavClicks() {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.18s ease';
+    setTimeout(function () {
+      document.body.style.opacity = '1';
+    }, 10);
     if (window.__aayuNavBound) return;
     window.__aayuNavBound = true;
 
@@ -39,17 +44,25 @@
 
       event.preventDefault();
       event.stopPropagation();
-      window.location.assign(targetPage);
+      // fade out then navigate
+      document.body.style.transition = 'opacity 0.18s ease';
+      document.body.style.opacity = '0';
+      setTimeout(function () {
+        window.location.assign(targetPage);
+      }, 180);
     });
 
     const currentFile = window.location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('span').forEach(function (span) {
       const label = (span.textContent || '').replace(/\s+/g, ' ').trim();
       const entry = NAV_TARGETS.find((e) => e.labels.some((l) => normalize(l) === normalize(label)));
-      if (entry && entry.target === currentFile) {
-        span.style.fontWeight = '600';
-        span.style.borderBottom = '2px solid currentColor';
-        span.style.paddingBottom = '2px';
+      if (entry) {
+        span.style.cursor = 'pointer';  // ← ADD THIS LINE
+        if (entry.target === currentFile) {
+          span.style.fontWeight = '600';
+          span.style.borderBottom = '2px solid currentColor';
+          span.style.paddingBottom = '2px';
+        }
       }
     });
   }
