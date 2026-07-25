@@ -45,11 +45,11 @@
       event.preventDefault();
       event.stopPropagation();
       // fade out then navigate
-      document.body.style.transition = 'opacity 0.18s ease';
+      document.body.style.transition = 'none';
       document.body.style.opacity = '0';
-      setTimeout(function () {
+      requestAnimationFrame(function() {
         window.location.assign(targetPage);
-      }, 180);
+      });
     });
 
     const currentFile = window.location.pathname.split('/').pop() || 'index.html';
@@ -57,7 +57,7 @@
       const label = (span.textContent || '').replace(/\s+/g, ' ').trim();
       const entry = NAV_TARGETS.find((e) => e.labels.some((l) => normalize(l) === normalize(label)));
       if (entry) {
-        span.style.cursor = 'pointer';  // ← ADD THIS LINE
+        span.setAttribute('data-aayu-nav', '1');  // ← ADD THIS LINE
         if (entry.target === currentFile) {
           span.style.fontWeight = '600';
           span.style.borderBottom = '2px solid currentColor';
@@ -93,6 +93,11 @@
   }
 
   function tryPatch() {
+    const style = document.createElement('style');
+    style.textContent = `
+      [data-aayu-nav] { cursor: pointer !important; }
+    `;
+    document.head.appendChild(style);
     if (patchDCLogicLifecycle()) return;
 
     const started = Date.now();
